@@ -10,15 +10,15 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/dev")
 public class PlayerController {
     @Autowired
     private PlayerRepository playerRepository;
 
-//    @GetMapping("/players")
-//    public List<Player> getAllPlayers() {
-//        return playerRepository.findAll();
-//    }
+    @GetMapping("/players")
+    public List<Player> getAllPlayers() {
+        return playerRepository.findAll();
+    }
 //
 //    @PostMapping("/players")
 //    public Player createPlayer(@Valid @RequestBody Player player) {
