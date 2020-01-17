@@ -1,8 +1,10 @@
 package com.psych.game.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.psych.game.Constants;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,5 +38,47 @@ public class Question extends Auditable {
     @OneToMany(mappedBy = "question")
     @Getter
     @Setter
-    private List<EllenAnswer> ellenAnswers;
+    @JsonManagedReference
+    private List<EllenAnswer> ellenAnswers = new ArrayList<>();
+
+    private Question(Builder builder) {
+        setQuestionText(builder.questionText);
+        setCorrectAnswer(builder.correctAnswer);
+        setGameMode(builder.gameMode);
+    }
+
+    public Question() {}
+
+    public static final class Builder {
+        @NotBlank
+        private String questionText;
+
+        @NotBlank
+        private String correctAnswer;
+
+        @NotNull
+        private GameMode gameMode;
+
+        public Builder() {
+        }
+
+        public Builder questionText(@NotBlank String val) {
+            questionText = val;
+            return this;
+        }
+
+        public Builder correctAnswer(@NotBlank String val) {
+            correctAnswer = val;
+            return this;
+        }
+
+        public Builder gameMode(@NotNull GameMode val) {
+            gameMode = val;
+            return this;
+        }
+
+        public Question build() {
+            return new Question(this);
+        }
+    }
 }

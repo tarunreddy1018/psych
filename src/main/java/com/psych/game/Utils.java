@@ -1,13 +1,33 @@
 package com.psych.game;
 
+import com.psych.game.model.Question;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Utils {
+    private static List<String> wordsList;
+    private static Map<String, Integer> wordIndices;
+
+    static {
+        wordsList = new ArrayList<>();
+        wordIndices = new HashMap<>();
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("words.txt"));
+            String word;
+            do {
+                word = br.readLine();
+                wordsList.add(word);
+                wordIndices.put(word, (wordsList.size()-1));
+            } while(word != null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static List<Pair<String, String>> readQAFile(String fileName) throws FileNotFoundException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         String question, answer;
@@ -28,5 +48,30 @@ public class Utils {
         catch (IOException ignored) {
         }
         return questions_answers;
+    }
+
+    public static String getSecretCodeFromId(Long id) {
+        int base = wordsList.size();
+        String code = "";
+        while(id > 0) {
+            code += wordsList.get((int) (id % base)) + " ";
+            id /= base;
+        }
+        return code;
+    }
+
+    public static long getGameIdFromSecretCode(String code) {
+        List<String> words = Arrays.asList(code.split(" "));
+        long gameId = 0L;
+        int base = wordsList.size();
+        for(String word : words) {
+            int index = wordIndices.get(word);
+            gameId = gameId * base + index;
+        }
+        return gameId;
+    }
+
+    public static Question getRandomQuestion() {
+
     }
 }

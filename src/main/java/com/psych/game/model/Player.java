@@ -1,5 +1,6 @@
 package com.psych.game.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.URL;
@@ -26,13 +27,55 @@ public class Player extends Auditable {
     @URL
     private String picURL;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @Getter
     @Setter
-    private Stats stats;
+    private Stats stats = new Stats();
 
     @ManyToMany(mappedBy = "players")
+    @JsonIdentityReference
     @Getter
     @Setter
     private List<Game> games;
+
+    private Player(Builder builder) {
+        setName(builder.name);
+        setPsychFaceURL(builder.psychFaceURL);
+        setPicURL(builder.picURL);
+    }
+
+    public Player() {}
+
+    public static final class Builder {
+        @NotBlank
+        private String name;
+
+        @URL
+        private String psychFaceURL;
+
+        @URL
+        private String picURL;
+
+        public Builder() {
+        }
+
+        public Builder name(@NotBlank String val) {
+            name = val;
+            return this;
+        }
+
+        public Builder psychFaceURL(@URL String val) {
+            psychFaceURL = val;
+            return this;
+        }
+
+        public Builder picURL(@URL String val) {
+            picURL = val;
+            return this;
+        }
+
+        public Player build() {
+            return new Player(this);
+        }
+    }
 }

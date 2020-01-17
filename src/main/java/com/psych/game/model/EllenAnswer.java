@@ -1,5 +1,6 @@
 package com.psych.game.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.psych.game.Constants;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,13 +10,16 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "ellen_answers")
 public class EllenAnswer extends Auditable {
     @ManyToOne
+    @JsonBackReference
     @Getter
     @Setter
+    @NotNull
     private Question question;
 
     @Getter
